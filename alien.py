@@ -20,3 +20,12 @@ class Alien(Sprite):
         # 储存外星人准确位置
         self.x = float(self.rect.x)
 
+    def check_edge(self):
+        """检查外星人是否触碰屏幕边缘，如触碰则返回True"""
+        screen_rect = self.screen.get_rect()
+        return (self.rect.right >= screen_rect.right) or (self.rect.left <= 0)
+
+    def update(self):
+        """根据setting.py中设置的外星人速度，更新外星人位置"""
+        self.x += self.settings.alien_speed * self.settings.alien_direction
+        self.rect.x = self.x

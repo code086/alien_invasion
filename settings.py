@@ -11,8 +11,14 @@ class Settings:
         self.bg_color = (230, 230, 230, 230)
         # 设置帧率控制（每秒60次循环）
         self.clock_tick = 60
-        # 设置飞船速度
-        self.speed = 1.5
+        # 设置飞船移动速度
+        self.ship_speed = 1.5
+        # 设置外星人移动速度
+        self.alien_speed = 1.0
+        # 设置外星人移动方向（1是右，-1是左）
+        self.alien_direction = 1
+        # 设置外星舰队的下落速度
+        self.fleet_speed = 1.0
 
         # 设置子弹相关参数
         self.bullet_color = (60, 60, 60)
