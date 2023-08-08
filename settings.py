@@ -11,6 +11,8 @@ class Settings:
         self.bg_color = (230, 230, 230, 230)
         # 设置帧率控制（每秒60次循环）
         self.clock_tick = 60
+        # 设置飞船数量限制
+        self.ship_limit = 3
         # 设置飞船移动速度
         self.ship_speed = 1.5
         # 设置外星人移动速度

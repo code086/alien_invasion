@@ -26,6 +26,11 @@ class Ship:
         # 引入设置类，确定飞船移动速度
         self.settings = ai_game.settings
 
+    def center_ship(self):
+        """将飞船居中"""
+        self.rect.midbottom = self.screen_rect.midbottom
+        self.rect.x = float(self.rect.x)
+
     def update(self):
         """ 根据移动标识更新飞船位置"""
         if self.moving_right and self.screen_rect.right > self.rect.right:
