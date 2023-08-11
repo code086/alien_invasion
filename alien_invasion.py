@@ -8,6 +8,7 @@ import ship
 from alien import Alien
 from bullet import Bullet
 from game_stats import GameStats
+from button import Button
 
 
 class AlienInvasion:
@@ -16,7 +17,10 @@ class AlienInvasion:
     def __init__(self):
         """初始化类并创建资源"""
         pygame.init()
+
+        # 设置帧率控制
         self.clock = pygame.time.Clock()
+        # 加载配置类
         self.settings = settings.Settings()
         # 设置全屏显示
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -36,9 +40,10 @@ class AlienInvasion:
         self.aliens = pygame.sprite.Group()
         # 创建外星人编队
         self._create_fleet()
-
         # 游戏活动状态
-        self.game_active = True
+        self.game_active = False
+        # 创建Play按钮
+        self.play_button = Button(self, "Play")
 
     def run_game(self):
         """运行游戏"""
@@ -56,10 +61,30 @@ class AlienInvasion:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+
+    def _check_play_button(self, mouse_pos):
+        """检查鼠标按下play按钮"""
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.game_active:
+            # 重置游戏统计信息
+            self.stat.reset_stats()
+            # 游戏状态调整为True
+            self.game_active = True
+            # 清空外星人编组和子弹编组
+            self.bullets.empty()
+            self.aliens.empty()
+            # 创建新的舰队，并将飞船置于屏幕底部
+            self._create_fleet()
+            self.ship.center_ship()
+            # 隐藏光标
+            pygame.mouse.set_visible(False)
 
     def _check_keydown_events(self, event):
         """按下按键响应"""
@@ -120,6 +145,7 @@ class AlienInvasion:
             sleep(0.5)
         else:
             self.game_active = False
+            pygame.mouse.set_visible(True)
 
     def _check_aliens_bottom(self):
         """检查外星舰队是否达到屏幕底部"""
@@ -187,7 +213,8 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
-
+        if not self.game_active:
+            self.play_button.draw_button()
         pygame.display.flip()
 
 
