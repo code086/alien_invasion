@@ -147,6 +147,9 @@ class AlienInvasion:
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+        # 提高玩家等级
+        self.stats.level += 1
+        self.scoreboard.pre_level()
 
     def _ship_hit(self):
         """响应飞船和外星人碰撞"""

@@ -8,6 +8,8 @@ class GameStats:
         # 最高分记录
         self.high_score = 0
 
+        self.level = 1
+
     def reset_stats(self):
         """初始化游戏运行期间可变化的统计信息"""
         self.ship_left = self.settings.ship_limit
