@@ -94,6 +94,9 @@ class AlienInvasion:
             # 创建新的舰队，并将飞船置于屏幕底部
             self._create_fleet()
             self.ship.center_ship()
+            # 刷新剩余飞船数
+            self.scoreboard.pre_level()
+            self.scoreboard.pre_ship()
             # 隐藏光标
             pygame.mouse.set_visible(False)
 
@@ -154,8 +157,9 @@ class AlienInvasion:
     def _ship_hit(self):
         """响应飞船和外星人碰撞"""
         if self.stats.ship_left > 0:
-            # 将ship_limit减1
+            # 将ship_limit减1，更新计分牌
             self.stats.ship_left -= 1
+            self.scoreboard.pre_ship()
             # 清空子弹和外星舰队
             self.bullets.empty()
             self.aliens.empty()
