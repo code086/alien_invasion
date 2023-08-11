@@ -73,6 +73,8 @@ class AlienInvasion:
         """检查鼠标按下play按钮"""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.game_active:
+            # 重置游戏参数配置
+            self.settings.initialize_dynamic_settings()
             # 重置游戏统计信息
             self.stat.reset_stats()
             # 游戏状态调整为True
@@ -129,6 +131,7 @@ class AlienInvasion:
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
 
     def _ship_hit(self):
         """响应飞船和外星人碰撞"""
