@@ -9,6 +9,7 @@ from alien import Alien
 from bullet import Bullet
 from game_stats import GameStats
 from button import Button
+from scoreboard import ScoreBoard
 
 
 class AlienInvasion:
@@ -22,6 +23,7 @@ class AlienInvasion:
         self.clock = pygame.time.Clock()
         # 加载配置类
         self.settings = settings.Settings()
+
         # 设置全屏显示
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.screen_width = self.screen.get_rect().width
@@ -30,8 +32,13 @@ class AlienInvasion:
         # 通过尺寸设置屏幕大小
         # self.screen = pygame.display.set_mode(self.settings.screen_size)
         pygame.display.set_caption(self.settings.screen_caption)
+
         # 创建用于存储游戏统计信息的实例
-        self.stat = GameStats(self)
+        self.stats = GameStats(self)
+
+        # 创建计分牌
+        self.scoreboard = ScoreBoard(self)
+
         # 创建飞船
         self.ship = ship.Ship(self)
         # 创建子弹编组
@@ -76,7 +83,9 @@ class AlienInvasion:
             # 重置游戏参数配置
             self.settings.initialize_dynamic_settings()
             # 重置游戏统计信息
-            self.stat.reset_stats()
+            self.stats.reset_stats()
+            # 重置计分板
+            self.scoreboard.prep_score()
             # 游戏状态调整为True
             self.game_active = True
             # 清空外星人编组和子弹编组
@@ -127,6 +136,12 @@ class AlienInvasion:
         # 子弹碰撞外星人，同时删除子弹和外星人
         collisions = pygame.sprite.groupcollide(
             self.bullets, self.aliens, True, True)
+        # 如有外星人被碰撞，则更新计分牌
+        if collisions:
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_points * len(aliens)
+            self.scoreboard.prep_score()
+            self.scoreboard.check_high_score()
         # 外星人全部被击落后删除所有子弹并创建新外星舰队
         if not self.aliens:
             self.bullets.empty()
@@ -135,9 +150,9 @@ class AlienInvasion:
 
     def _ship_hit(self):
         """响应飞船和外星人碰撞"""
-        if self.stat.ship_left > 0:
+        if self.stats.ship_left > 0:
             # 将ship_limit减1
-            self.stat.ship_left -= 1
+            self.stats.ship_left -= 1
             # 清空子弹和外星舰队
             self.bullets.empty()
             self.aliens.empty()
@@ -218,6 +233,7 @@ class AlienInvasion:
         self.aliens.draw(self.screen)
         if not self.game_active:
             self.play_button.draw_button()
+        self.scoreboard.show_score()
         pygame.display.flip()
 
 
